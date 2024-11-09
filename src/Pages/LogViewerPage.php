@@ -61,7 +61,7 @@ class LogViewerPage extends Page implements HasForms, HasActions
     protected function getFileNames($files): Collection
     {
         return collect($files)->mapWithKeys(function (SplFileInfo $file) {
-            return [$file->getRealPath() => $file->getRealPath()];
+            return [$file->getRealPath() => $file->getFilename()];
         });
     }
     
