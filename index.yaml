@@ -1,0 +1,6 @@
+name: 'Log Viewer'
+folder: LogViewer
+author: 'Leconfe'
+description: 'View error logs directly from the application'
+version: 1.0.0
+  

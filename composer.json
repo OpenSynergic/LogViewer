@@ -1,0 +1,16 @@
+{
+    "name": "leconfe/log-viewer",
+    "autoload": {
+        "psr-4": {
+            "LogViewer\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Leconfe"
+        }
+    ],
+    "require-dev": {
+        "filament/filament": "^3.0"
+    }
+}
