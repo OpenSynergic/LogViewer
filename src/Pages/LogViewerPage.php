@@ -27,7 +27,7 @@ class LogViewerPage extends Page implements HasForms, HasActions
 
     protected static bool $shouldRegisterNavigation = false;
 
-    #[Locked] 
+    #[Locked]
     public array $options = [];
 
     public ?string $logFile = null;
@@ -41,16 +41,7 @@ class LogViewerPage extends Page implements HasForms, HasActions
 
     public function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Select::make('logFile')
-                    ->label(false)
-                    ->placeholder('Select for a log file')
-                    ->lazy()
-                    ->searchable()
-                    ->options($this->getFileNames($this->getFinder()))
-                    ->afterStateUpdated(fn() => $this->refresh()),
-            ]);
+        return $form->schema([Select::make('logFile')->label(false)->placeholder('Select for a log file')->lazy()->searchable()->options($this->getFileNames($this->getFinder()))->afterStateUpdated(fn() => $this->refresh())]);
     }
 
     public function refresh(): void
@@ -64,33 +55,34 @@ class LogViewerPage extends Page implements HasForms, HasActions
             return [$file->getRealPath() => $file->getFilename()];
         });
     }
-    
+
     protected function getFinder(): Finder
     {
-        return Finder::create()
-            ->ignoreDotFiles(true)
-            ->ignoreUnreadableDirs()
-            ->files()
-            ->in([
-                storage_path('logs'),
-            ])
-            ->notName([]);
+        return once(
+            fn() => Finder::create()
+                ->ignoreDotFiles(true)
+                ->ignoreUnreadableDirs()
+                ->files()
+                ->sortByModifiedTime()
+                ->in([storage_path('logs')])
+                ->notName([]),
+        );
     }
 
     public function read(): string
     {
         // check extension is log
-        if (! $this->logFile || pathinfo($this->logFile, PATHINFO_EXTENSION) !== 'log') {
+        if (!$this->logFile || pathinfo($this->logFile, PATHINFO_EXTENSION) !== 'log') {
             $this->logFile = null;
             return '';
         }
-        
+
         return File::get($this->logFile);
     }
 
     public function clear(): void
     {
-        if (! $this->logFile || pathinfo($this->logFile, PATHINFO_EXTENSION) !== 'log') {
+        if (!$this->logFile || pathinfo($this->logFile, PATHINFO_EXTENSION) !== 'log') {
             $this->logFile = null;
             return;
         }
@@ -105,7 +97,7 @@ class LogViewerPage extends Page implements HasForms, HasActions
     protected function getViewData(): array
     {
         $plugin = Plugin::getPlugin('LogViewer');
-        
+
         return [
             'css' => $plugin->asset('index.css'),
             'js' => $plugin->asset('index.js'),
@@ -117,15 +109,15 @@ class LogViewerPage extends Page implements HasForms, HasActions
         return Action::make('download')
             ->icon('heroicon-c-arrow-down-tray')
             ->disabled(!$this->logFile)
-            ->action(fn () => response()->download($this->logFile));
+            ->action(fn() => response()->download($this->logFile));
     }
-    
+
     public function clearAction(): Action
     {
         return Action::make('clear')
             ->icon('heroicon-o-trash')
             ->requiresConfirmation()
             ->disabled(!$this->logFile)
-            ->action(fn () => response()->download($this->logFile));
+            ->action(fn() => response()->download($this->logFile));
     }
 }
