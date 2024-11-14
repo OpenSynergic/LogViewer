@@ -6,10 +6,12 @@ use App\Facades\Plugin;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Components\Actions\Action as FormAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Pages\Page;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
@@ -41,7 +43,21 @@ class LogViewerPage extends Page implements HasForms, HasActions
 
     public function form(Form $form): Form
     {
-        return $form->schema([Select::make('logFile')->label(false)->placeholder('Select for a log file')->lazy()->searchable()->options($this->getFileNames($this->getFinder()))->afterStateUpdated(fn() => $this->refresh())]);
+        return $form->schema([
+            Select::make('logFile')
+                ->label(false)
+                ->placeholder('Select for a log file')
+                ->lazy()
+                ->searchable()
+                ->options($this->getFileNames($this->getFinder()))
+                ->afterStateUpdated(fn() => $this->refresh())
+                ->suffixAction(
+                    FormAction::make('copyCostToPrice')
+                        ->icon('heroicon-c-arrow-down-tray')
+                        ->disabled(!$this->logFile)
+                        ->action(fn() => response()->download($this->logFile)),
+                ),
+        ]);
     }
 
     public function refresh(): void

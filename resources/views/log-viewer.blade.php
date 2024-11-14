@@ -9,12 +9,9 @@
             fontSize: @js(12)
         })"
     >
-        <div class="flex items-center justify-between gap-6">
+        <div class="flex flex-wrap items-center justify-between gap-6">
             <div class="w-full">
                 {{ $this->form }}
-            </div>
-            <div class="flex items-center space-x-2 shrink-0">
-                {{ $this->downloadAction }}
             </div>
         </div>
 

@@ -9,8 +9,5 @@
         {
             "name": "Leconfe"
         }
-    ],
-    "require-dev": {
-        "filament/filament": "^3.0"
-    }
+    ]
 }
