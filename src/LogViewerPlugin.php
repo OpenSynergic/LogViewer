@@ -5,7 +5,6 @@ namespace LogViewer;
 use App\Classes\Plugin;
 use Filament\Panel;
 use LogViewer\Pages\LogViewerPage;
-use Saade\FilamentLaravelLog\FilamentLaravelLogPlugin;
 
 class LogViewerPlugin extends Plugin
 {
