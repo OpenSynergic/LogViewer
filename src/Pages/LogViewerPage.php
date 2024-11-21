@@ -60,6 +60,11 @@ class LogViewerPage extends Page implements HasForms, HasActions
         ]);
     }
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()->can('viewAny', Plugin::class);
+    }
+
     public function refresh(): void
     {
         $this->dispatch('logContentUpdated', content: $this->read());
